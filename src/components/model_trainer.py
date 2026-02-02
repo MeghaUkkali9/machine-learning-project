@@ -42,8 +42,6 @@ class ModelTrainer:
 
             models = {
                 "Linear Regression": LinearRegression(),
-                "Lasso": Lasso(),
-                "Ridge": Ridge(),
                 "Decision Tree": DecisionTreeRegressor(),
                 "SVR": SVR(),
                 "AdaBoost": AdaBoostRegressor(),
@@ -74,8 +72,6 @@ class ModelTrainer:
                     'learning_rate':[.1,.01,0.5,.001],
                     'n_estimators': [8,16,32,64,128,256]
                 },
-                "Lasso": {},
-                "Ridge": {},
                 "SVR": {},
             }
             best_models = {}
