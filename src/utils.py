@@ -1,14 +1,11 @@
 import os
 import sys
+import dill
+
 import numpy as np
 import pandas as pd
-from src.exception import CustomException
 
-import os
-import sys
-import dill
 from src.exception import CustomException
-
 
 def save_object(file_path, obj):
     try:

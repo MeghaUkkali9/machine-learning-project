@@ -12,7 +12,6 @@ from sklearn.pipeline import Pipeline
 from src.exception import CustomException
 from src.logger import logging
 from src.utils import save_object
-from src.components.data_ingestion import DataIngestion
 
 @dataclass
 class DataTransformationConfig:
@@ -72,7 +71,7 @@ class DataTransformation:
 
             target_column_name = "math score"
 
-            X_train = train_df.drop(columns=[target_column_name])
+            X_train = train_df.drop(columns=[target_column_name], axis=1)
             y_train = train_df[target_column_name]
 
             X_test = test_df.drop(columns=[target_column_name])
@@ -103,11 +102,3 @@ class DataTransformation:
 
         except Exception as e:
             raise CustomException(e, sys)
-
-
-if __name__=="__main__":
-    obj = DataIngestion()
-    train_data, test_data = obj.initiate_data_ingestion()
-
-    dataTransformation = DataTransformation()
-    dataTransformation.initiate_data_transformation(train_data, test_data)

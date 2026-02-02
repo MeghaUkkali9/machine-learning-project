@@ -2,11 +2,14 @@ Create new environment:
             conda create -n venv python==3.10 -y
 Get a list of environments:
             conda env list
+Activate virtual environment:
+            conda Activate venv
 
 
-Initialize empty repo: git inits
+Initialize empty repo: git init
 
-pip install -r requirements.txt 
+To install all required packages needed for the project:
+            pip install -r requirements.txt 
 
 why do we need setup.py?
     We need setup.py so that later we can install our project like any other library (from PyPI), 
@@ -14,7 +17,7 @@ why do we need setup.py?
     Packaging is important because different versions behave differently and 
     people may forget to install required libraries.
 
+Run commands:
     python src/logger.py
-
-
-    Student performance Indicator
+    python src/components/data_ingestion.py
+    
