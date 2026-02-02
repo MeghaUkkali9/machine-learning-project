@@ -14,3 +14,6 @@ why do we need setup.py?
     people may forget to install required libraries.
 
     python src/logger.py
+
+
+    Student performance Indicator
