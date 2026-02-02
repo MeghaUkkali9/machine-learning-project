@@ -7,6 +7,7 @@ Get a list of environments:
 Initialize empty repo: git inits
 
 pip install -r requirements.txt 
+
 why do we need setup.py?
     We need setup.py so that later we can install our project like any other library (from PyPI), 
     or package it and give it to someone else to work together.
