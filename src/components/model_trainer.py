@@ -7,6 +7,8 @@ from src.logger import logging
 from src.exception import CustomException
 from src.utils import save_object
 
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import r2_score
 from sklearn.ensemble import (
     AdaBoostRegressor,
     RandomForestRegressor,
@@ -15,7 +17,6 @@ from sklearn.ensemble import (
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.svm import SVR
-from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from catboost import CatBoostRegressor
 
 
@@ -27,13 +28,6 @@ class ModelTrainerConfig:
 class ModelTrainer:
     def __init__(self):
         self.model_trainer_config = ModelTrainerConfig()
-
-    def evaluate_model(self, y_true, y_pred):
-        mse = mean_squared_error(y_true, y_pred)
-        mae = mean_absolute_error(y_true, y_pred)
-        rmse = np.sqrt(mse)
-        r2 = r2_score(y_true, y_pred)
-        return mse, mae, rmse, r2
 
     def initiate_model_trainer(self, train_set, test_set):
         try:
@@ -58,31 +52,75 @@ class ModelTrainer:
                 "CatBoost": CatBoostRegressor(verbose=False)
             }
 
-            model_scores = {}
+            params={
+                "Decision Tree": {
+                    'criterion':['squared_error', 'friedman_mse', 'absolute_error', 'poisson']
+                },
+                "Random Forest":{
+                    'n_estimators': [8,16,32,64,128,256]
+                },
+                "Gradient Boosting":{
+                    'learning_rate':[.1,.01,.05,.001],
+                    'subsample':[0.6,0.7,0.75,0.8,0.85,0.9],
+                    'n_estimators': [8,16,32,64,128,256]
+                },
+                "Linear Regression":{},
+                "CatBoost":{
+                    'depth': [6,8,10],
+                    'learning_rate': [0.01, 0.05, 0.1],
+                    'iterations': [30, 50, 100]
+                },
+                "AdaBoost":{
+                    'learning_rate':[.1,.01,0.5,.001],
+                    'n_estimators': [8,16,32,64,128,256]
+                },
+                "Lasso": {},
+                "Ridge": {},
+                "SVR": {},
+            }
+            best_models = {}
 
             for model_name, model in models.items():
-                logging.info(f"Training {model_name}")
+                logging.info(f"Tuning {model_name}")
 
-                model.fit(X_train, y_train)
-                y_test_pred = model.predict(X_test)
+                param_grid = params[model_name]
 
-                _, _, _, r2 = self.evaluate_model(y_test, y_test_pred)
-                model_scores[model_name] = r2
+                if param_grid:
+                    gs = GridSearchCV(
+                        model,
+                        param_grid,
+                        cv=3,
+                        scoring="r2",
+                        n_jobs=-1
+                    )
+                    gs.fit(X_train, y_train)
+                    best_model = gs.best_estimator_
+                else:
+                    model.fit(X_train, y_train)
+                    best_model = model
 
-            best_model_name = max(model_scores, key=model_scores.get)
-            best_model_score = model_scores[best_model_name]
+                y_test_pred = best_model.predict(X_test)
+                r2 = r2_score(y_test, y_test_pred)
 
-            logging.info(f"Best model: {best_model_name} with R2 = {best_model_score}")
+                best_models[model_name] = {
+                    "model": best_model,
+                    "r2": r2
+                }
+
+            best_model_name = max(best_models, key=lambda x: best_models[x]["r2"])
+            best_model_score = best_models[best_model_name]["r2"]
+            best_model = best_models[best_model_name]["model"]
 
             if best_model_score < 0.60:
                 raise CustomException("No suitable model found", sys)
 
-            best_model = models[best_model_name]
-            best_model.fit(X_train, y_train)
-
             save_object(
                 file_path=self.model_trainer_config.trained_model_file_path,
                 obj=best_model
+            )
+
+            logging.info(
+                f"Best model: {best_model_name} with R2 score: {best_model_score}"
             )
 
             return best_model, best_model_score
