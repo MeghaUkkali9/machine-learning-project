@@ -71,7 +71,7 @@ class DataTransformation:
 
             target_column_name = "math score"
 
-            X_train = train_df.drop(columns=[target_column_name], axis=1)
+            X_train = train_df.drop(columns=[target_column_name])
             y_train = train_df[target_column_name]
 
             X_test = test_df.drop(columns=[target_column_name])

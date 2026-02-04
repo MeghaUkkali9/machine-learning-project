@@ -26,6 +26,16 @@ Run commands:
 To access home page and index page : http://127.0.0.1:5000/predictdata, http://127.0.0.1:5000/
 
 
-Deploy this application using AWS:
-Use Elasticbeanstack
-    
+Deploying the application on AWS:
+
+We deploy the application using AWS Elastic Beanstalk which provides Linux server(EC2). Automatically handles server provisioning, 
+load balancing, application deployment.
+
+The application code lives in a GitHub repository.
+
+To automate deployment, we use AWS CodePipeline to integrates GitHub with Elastic Beanstalk, automatically deploys the latest code
+when changes are pushed and wnables Continuous Deployment.
+
+GitHub → CodePipeline → Elastic Beanstalk → EC2
+
+Elastic Beanstalk requires configuration files like Procfile, .ebextensions and a production-ready app

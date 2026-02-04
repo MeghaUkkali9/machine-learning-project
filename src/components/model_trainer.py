@@ -47,7 +47,7 @@ class ModelTrainer:
                 "AdaBoost": AdaBoostRegressor(),
                 "Random Forest": RandomForestRegressor(),
                 "Gradient Boosting": GradientBoostingRegressor(),
-                "CatBoost": CatBoostRegressor(verbose=False)
+                "CatBoost": CatBoostRegressor(verbose=False, loss_function="RMSE", random_state=42)
             }
 
             params={
@@ -81,7 +81,10 @@ class ModelTrainer:
 
                 param_grid = params[model_name]
 
-                if param_grid:
+                if model_name == "CatBoost":
+                    model.fit(X_train, y_train)
+                    best_model = model
+                elif param_grid:
                     gs = GridSearchCV(
                         model,
                         param_grid,
