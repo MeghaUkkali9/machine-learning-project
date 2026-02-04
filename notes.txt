@@ -2,8 +2,9 @@ Create new environment:
             conda create -n venv python==3.10 -y
 Get a list of environments:
             conda env list
+
 Activate virtual environment:
-            conda Activate venv
+            conda activate venv
 
 
 Initialize empty repo: git init
@@ -21,4 +22,10 @@ Run commands:
     python src/logger.py
     python src/components/data_ingestion.py
     To run app: python app.py
+    
+To access home page and index page : http://127.0.0.1:5000/predictdata, http://127.0.0.1:5000/
+
+
+Deploy this application using AWS:
+Use Elasticbeanstack
     
