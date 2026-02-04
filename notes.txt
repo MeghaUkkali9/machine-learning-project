@@ -20,4 +20,5 @@ why do we need setup.py?
 Run commands:
     python src/logger.py
     python src/components/data_ingestion.py
+    To run app: python app.py
     
